@@ -1,9 +1,10 @@
 import "./App.css";
 import * as THREE from "three";
+import { useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Outlines, Environment, useTexture } from "@react-three/drei";
 import { Physics, useSphere } from "@react-three/cannon";
-import { EffectComposer, N8AO, Noise, SMAA } from "@react-three/postprocessing";
+import { EffectComposer, SMAA } from "@react-three/postprocessing";
 import { useControls } from "leva";
 
 const rfs = THREE.MathUtils.randFloatSpread;
@@ -15,15 +16,22 @@ const baubleMaterial = new THREE.MeshStandardMaterial({
 });
 
 function App() {
+  const [pointerSize, setPointerSize] = useState(2);
+
+  const handleCanvasClick = () => {
+    setPointerSize((prevSize) => prevSize + 0.5);
+  };
+
   return (
     <Canvas
       shadows
       gl={{ antialias: false }}
       dpr={[1, 1.5]}
       camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 40 }}
+      onClick={handleCanvasClick}
     >
       <ambientLight intensity={0.5} />
-      <color attach="background"/>
+      <color attach="background" />
       <spotLight
         intensity={10}
         angle={0.2}
@@ -34,10 +42,10 @@ function App() {
       />
       <directionalLight intensity={0.5} position={[0, 10, 0]} castShadow />
       <Physics gravity={[0, 2, 0]} iterations={10}>
-        <Pointer />
-        <Clump />
+        <Pointer key={pointerSize} pointerSize={pointerSize} />
+        <MESH />
       </Physics>
-      <Environment files="src/adamsbridge.hdr" />
+      <Environment files="src/hdri.hdr" />
       <EffectComposer disableNormalPass multisampling={0}>
         <SMAA />
       </EffectComposer>
@@ -45,7 +53,7 @@ function App() {
   );
 }
 
-function Clump({
+function MESH({
   mat = new THREE.Matrix4(),
   vec = new THREE.Vector3(),
   ...props
@@ -80,13 +88,14 @@ function Clump({
   );
 }
 
-function Pointer() {
+function Pointer({ pointerSize }) {
   const viewport = useThree((state) => state.viewport);
-  const [, api] = useSphere(() => ({
+  const [ref, api] = useSphere(() => ({
     type: "Kinematic",
-    args: [2],
+    args: [pointerSize],
     position: [0, 0, 0],
   }));
+
   return useFrame((state) =>
     api.position.set(
       state.mouse.x * viewport.width,
