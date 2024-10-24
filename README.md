@@ -2,7 +2,6 @@
 
 **KineticSphere** is an interactive 3D simulation built using **React Fiber** and **Three.js**, where a group of spheres collide and interact with a central kinetic force. This project demonstrates basic physics principles, collision detection, and user interaction in a web environment.
 
-![KineticSphere Demo](path_to_demo_image)
 
 ## Features
 - **Realistic Collision**: Spheres collide with each other in real time.
