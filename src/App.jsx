@@ -45,7 +45,7 @@ function App() {
         <Pointer key={pointerSize} pointerSize={pointerSize} />
         <MESH />
       </Physics>
-      <Environment files="/public/src/hdri.hdr" />
+      <Environment files="/src/hdri.hdr" />
       <EffectComposer disableNormalPass multisampling={0}>
         <SMAA />
       </EffectComposer>
@@ -80,7 +80,7 @@ function MESH({
         );
     }
   });
-  const texture = useTexture("/public/src/texture.jpg");
+  const texture = useTexture("/src/texture.jpg");
   return (
     <instancedMesh ref={ref} castShadow receiveShadow args={[sphereGeometry, baubleMaterial, numbers]} material-map={texture}>
       <Outlines thickness={2} />
